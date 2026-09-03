@@ -20,7 +20,7 @@ using UnityEngine.InputSystem;
 
 public class Paddle : MonoBehaviour
 {
-    [SerializeField] PaddleSide side;
+    [SerializeField] public PaddleSide side;
     [SerializeField] float minTravelZ;
     [SerializeField] float maxTravelZ;
     [SerializeField] float speed;
