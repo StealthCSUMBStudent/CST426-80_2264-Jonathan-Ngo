@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7391180554067283481}
   - component: {fileID: 1918321533459780927}
   - component: {fileID: -127409104609422022}
+  - component: {fileID: -8012189639482468516}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Ball
@@ -214,3 +215,20 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &-8012189639482468516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3980620364614083963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 1
+  AutoUpdateKinematicState: 0
+  AutoSetKinematicOnDespawn: 0

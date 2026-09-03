@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,14 +19,14 @@ using UnityEngine.InputSystem;
  * prefab X if the table is centered at 0.
  */
 
-public class Paddle : MonoBehaviour
+public class Paddle : NetworkBehaviour
 {
     [SerializeField] public PaddleSide side;
     [SerializeField] float minTravelZ;
     [SerializeField] float maxTravelZ;
     [SerializeField] float speed;
     [SerializeField] float collisionBallSpeedUp = 1.5f;
-    
+
     // Local two-player needs separate keys per paddle. InputSystem_Actions
     // already has a Player/Paddle axis (W/S) for the one-owner step.
     [SerializeField] Key moveUpKey = Key.W;
@@ -50,6 +51,10 @@ public class Paddle : MonoBehaviour
 
     void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
         float direction = 0f;
         if (Keyboard.current[moveUpKey].isPressed) direction += 1f;
         if (Keyboard.current[moveDownKey].isPressed) direction -= 1f;

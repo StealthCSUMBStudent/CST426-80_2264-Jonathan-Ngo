@@ -7,6 +7,9 @@ using UnityEngine;
  * it instantiates one registered prefab and calls NetworkObject.Spawn().
  */
 
+/*
+ * Only taking this script to have the ball spawner tested. it works but no movement from ball yet.
+ */
 public class TestServerBallSpawner : MonoBehaviour
 {
     [SerializeField] NetworkObject ballPrefab;
