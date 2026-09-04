@@ -51,10 +51,12 @@ public class Paddle : NetworkBehaviour
 
     void Update()
     {
+        Debug.Log($"Paddle {side}: IsOwner={IsOwner}, IsClient={IsClient}, IsServer={IsServer}");
         if (!IsOwner)
         {
             return;
         }
+        if (Keyboard.current == null) return;
         float direction = 0f;
         if (Keyboard.current[moveUpKey].isPressed) direction += 1f;
         if (Keyboard.current[moveDownKey].isPressed) direction -= 1f;
@@ -63,6 +65,17 @@ public class Paddle : NetworkBehaviour
         newPosition.z = Mathf.Clamp(newPosition.z, minTravelZ, maxTravelZ);
 
         transform.position = newPosition;
+        /*
+         *         if (Keyboard.current == null) return;
+
+        float deltaMove = 0f;
+        if (Keyboard.current.aKey.isPressed) deltaMove -= speed;
+        if (Keyboard.current.dKey.isPressed) deltaMove += speed;
+
+        if (Mathf.Approximately(deltaMove, 0f)) return;
+
+        transform.Translate(Vector3.right * (deltaMove * Time.deltaTime));
+         */
     }
 
     void OnCollisionEnter(Collision other)
