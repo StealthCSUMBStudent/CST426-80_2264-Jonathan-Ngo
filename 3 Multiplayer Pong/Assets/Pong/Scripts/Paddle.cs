@@ -51,7 +51,7 @@ public class Paddle : NetworkBehaviour
 
     void Update()
     {
-        Debug.Log($"Paddle {side}: IsOwner={IsOwner}, IsClient={IsClient}, IsServer={IsServer}");
+        //Debug.Log($"Paddle {side}: IsOwner={IsOwner}, IsClient={IsClient}, IsServer={IsServer}");
         if (!IsOwner)
         {
             return;

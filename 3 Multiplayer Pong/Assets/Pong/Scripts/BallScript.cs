@@ -14,15 +14,38 @@ public class BallScript : NetworkBehaviour
     public float speedIncrease = 0.5f;
     public float changeTime = 0;
     public int randomNum;
-    public AudioClip boing;
-    AudioSource audioSource;
-    public AudioClip speedUp;
+    [SerializeField] public Paddle paddler;
+    //public Paddle paddler = collision.gameObject.GetComponent<Paddle>();
+    //ublic AudioClip boing;
+    //AudioSource audioSource;
+    //public AudioClip speedUp;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-
+    public bool IsServerOwned => IsSpawned && OwnerClientId == NetworkManager.ServerClientId;
     void Awake()
     {
         //audioSource = GetComponent<AudioSource>();
     }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsServer) { 
+            return;
+        }
+        Vector3 force = new Vector3(0f, 0f, 0f);
+        randomNum = Random.Range(0, 9);
+        if (randomNum >= 5)
+        {
+            Debug.Log($" Ball Turn to Right" + randomNum);
+            force = new Vector3(Random.Range(2f, 4f), 0f, Random.Range(2f, 4f));
+        }
+        if (randomNum <= 4)
+        {
+            Debug.Log($" Ball Turn to Left" + randomNum);
+            force = new Vector3(Random.Range(-4f, -2f), 0f, Random.Range(-4f, -2f));
+        }
+        ball.linearVelocity = force * ballSpeed;
+    }
+    /*
     void Start()
     {
         Vector3 force = new Vector3(0f, 0f, 0f);
@@ -39,7 +62,7 @@ public class BallScript : NetworkBehaviour
         }
         ball.linearVelocity = force * ballSpeed;
     }
-
+    */
     public float resetSpeed()
     {
         speed = 3f;
@@ -62,9 +85,10 @@ public class BallScript : NetworkBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
+       Paddle paddler = collision.gameObject.GetComponent<Paddle>();
         if (!IsServer)
             return;
-        if (collision.gameObject.name == "Left Paddle" && Time.time > changeTime + 1)
+        if (paddler.side == PaddleSide.Left && Time.time > changeTime + 1)
         {
             speed += speedIncrease;
             Vector3 force = new Vector3(Random.Range(1f, 2f), 0f, Random.Range(0.5f, 1f));
@@ -75,7 +99,7 @@ public class BallScript : NetworkBehaviour
             Debug.Log($"$current speed is: " + speed);
         }
 
-        if (collision.gameObject.name == "Right Paddle" && Time.time > changeTime + 1)
+        if (paddler.side == PaddleSide.Right && Time.time > changeTime + 1)
         {
             speed += speedIncrease;
             Vector3 force = new Vector3(Random.Range(-2f, -1f), 0f, Random.Range(-1f, -0.5f));

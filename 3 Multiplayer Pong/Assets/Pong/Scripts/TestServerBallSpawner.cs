@@ -13,7 +13,7 @@ using UnityEngine;
 public class TestServerBallSpawner : MonoBehaviour
 {
     [SerializeField] NetworkObject ballPrefab;
-    [SerializeField] Vector3 spawnPosition = new(0f, 1.5f, 0f);
+    [SerializeField] Vector3 spawnPosition = new(0f, 0.5f, 0f);
 
     public NetworkObject SpawnedBall => _spawnedBall;
     public bool HasSpawnedBall => _spawnedBall != null && _spawnedBall.IsSpawned;
