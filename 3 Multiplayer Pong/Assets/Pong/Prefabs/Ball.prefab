@@ -249,3 +249,4 @@ MonoBehaviour:
   speed: 3
   direction: {x: 1, y: 0, z: 0}
   resetDistance: 7
+  paddler: {fileID: 8936796061542835020, guid: 183b4c8ff3a2c1e489353e2a0b306d5b, type: 3}
