@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 /*
@@ -6,7 +7,7 @@ using UnityEngine;
  * You will make this server-only so two clients cannot score twice.
  */
 
-public class GoalTrigger : MonoBehaviour
+public class GoalTrigger : NetworkBehaviour
 {
     [SerializeField] GameManager gameManager;
     [SerializeField] PaddleSide scoringSide;

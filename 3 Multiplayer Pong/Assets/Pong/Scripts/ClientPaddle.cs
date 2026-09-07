@@ -27,5 +27,14 @@ public class ClientPaddle : NetworkBehaviour
             Debug.Log("Player ClientID is " + OwnerClientId + "side is " + p_playerInstance.side);
             transform.position = new Vector3(7.5f, transform.position.y, transform.position.z);
         }
+        /*
+        if (OwnerClientId == 2)
+        {
+            
+            Debug.Log("Player Count is full!");
+            Destroy(p_playerInstance);
+            return;
+        }
+        */
     }
 }

@@ -1,5 +1,7 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Audio;
 
 /*
  * TestServerBall is Demo 07's server-owned non-player object. Only the server
@@ -13,14 +15,20 @@ using UnityEngine;
 public class TestServerBall : NetworkBehaviour
 {
     public float speed = 3f;
-    public Vector3 direction = new(1f, 0f, 0f);
+    public Vector3 direction = new(1f, 0f, 1f);
     public float resetDistance = 0f;
     [SerializeField] private Paddle paddler;
-    public int randomNum;
+    public int randomNum; // determine if ball goes left or right
+    public int zNum; // determine if ball goes up or down. lower numbers for going down. higher numbers for going up
     Vector3 normalizedDirection = new(0, 0, 0);
+    Vector3 normalizedDirectionZ = new(0, 0, 0);
     public bool IsServerOwned => IsSpawned && OwnerClientId == NetworkManager.ServerClientId;
-
+    public int leftScoreNum;
+    public int rightScoreNum;
+    public TextMeshProUGUI leftText;
+    public TextMeshProUGUI rightText;
     bool _loggedFirstMove;
+    public GameManager scoreChecker;
 
     public override void OnNetworkSpawn()
     {
@@ -49,6 +57,18 @@ public class TestServerBall : NetworkBehaviour
     void Start()
     {
         randomNum = Random.Range(0, 9);
+        zNum = 0; //disabled until paddle hits
+        leftScoreNum = 0;
+        rightScoreNum = 0;
+        //that means i will go with 1, 10 for the random on zNum
+        //0,1,2,3,4,5,6,7,8,9
+        //0,1,2,3,4
+        //5,6,7,8,9
+        ///////////////
+        //1,2,3,4,5,6,7,8,9,10
+        //1,2,3,4,5
+        //6,7,8,9,10
+
     }
     public override void OnNetworkDespawn()
     {
@@ -58,20 +78,50 @@ public class TestServerBall : NetworkBehaviour
     void Update()
     {
         if (!IsServer) return;
+        if (NetworkManager.ConnectedClientsIds.Count < 2) return;
+        if (scoreChecker._leftPlayerScore == 11)
+        {
+            return;
+        }
+        if (scoreChecker._rightPlayerScore == 11)
+        {
+            return;
+        }
         //Vector3 normalizedDirection = new(0,0,0);
         //modified snippet from old ballscript
         if (randomNum >= 5) 
         {
-            Debug.Log($" Ball Turn to Right" + randomNum);
+            //Debug.Log($" Ball Turn to Right" + randomNum);
             normalizedDirection = direction.sqrMagnitude > 0f ? direction.normalized : Vector3.right;
+            /*
+            if (zNum <= 5 && zNum != 0) // go down
+            {
+               normalizedDirectionZ = direction.sqrMagnitude > 0f ? direction.normalized : Vector3.back;
+            } else if (zNum >= 6) // go up
+            {
+                normalizedDirectionZ = direction.sqrMagnitude > 0f ? direction.normalized : Vector3.forward;
+            }
+            */
+               
         }
         if (randomNum <= 4)
         {
-            Debug.Log($" Ball Turn to Left" + randomNum);
+            //Debug.Log($" Ball Turn to Left" + randomNum);
             normalizedDirection = direction.sqrMagnitude > 0f ? -direction.normalized : Vector3.left;
+            /*
+            if (zNum <= 5 && zNum != 0) // go down
+            {
+                normalizedDirectionZ = direction.sqrMagnitude > 0f ? direction.normalized : Vector3.back;
+            }
+            else if (zNum >= 6) // go up
+            {
+                normalizedDirectionZ = direction.sqrMagnitude > 0f ? direction.normalized : Vector3.forward;
+            }
+            */
         }
         //Vector3 normalizedDirection = direction.sqrMagnitude > 0f ? direction.normalized : Vector3.right;
         transform.Translate(normalizedDirection * (speed * Time.deltaTime), Space.World);
+        transform.Translate(normalizedDirectionZ * (speed * Time.deltaTime), Space.World);
 
         if (!_loggedFirstMove)
         {
@@ -90,18 +140,42 @@ public class TestServerBall : NetworkBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.name == "LNet")
+        {
+            //Debug.Log("Ball scored for: " + OwnerClientId + " Aka right");
+            Vector3 resetPosition = transform.position;
+            resetPosition.x = -Mathf.Sign(resetPosition.x) * 0;
+            transform.position = resetPosition;
+            randomNum = 6; //make ball go right thanks to randonnum in update
+            //rightScoreNum++;
+            //SetCountTextR();
+        }
+        if (collision.gameObject.name == "RNet")
+        {
+            //Debug.Log("Ball scored for: " + OwnerClientId + " Aka left");
+            Vector3 resetPosition = transform.position;
+            resetPosition.x = -Mathf.Sign(resetPosition.x) * 0;
+            transform.position = resetPosition;
+            randomNum = 1; //make ball go left thanks to randonnum in update
+            //leftScoreNum++;
+            //SetCountTextL();
+        }
         paddler = collision.gameObject.GetComponent<Paddle>(); //get collision and check paddleside on who hits. will update more later
         if (!IsServer) return;
+        if (paddler == null) return;
         if (paddler.side == PaddleSide.Left)
         {
-            Debug.Log("Ball hit by: " + OwnerClientId + " Aka left");
+            //Debug.Log("Ball hit by: " + OwnerClientId + " Aka left");
             randomNum = 6; //make ball go right thanks to randonnum in update
+            zNum = Random.Range(1, 10);
         }
         if (paddler.side == PaddleSide.Right)
         {
-            Debug.Log("Ball hit by: " + OwnerClientId + " Aka right");
+            // Debug.Log("Ball hit by: " + OwnerClientId + " Aka right");
             randomNum = 1; //make ball go left thanks to randonnum in update
+            zNum = Random.Range(1, 10);
         }
+        
     }
 
     void ApplyBallColor()
@@ -109,5 +183,14 @@ public class TestServerBall : NetworkBehaviour
         if (!TryGetComponent(out Renderer ballRenderer)) return;
 
         ballRenderer.material.color = new Color(1f, 0.82f, 0.25f);
+    }
+
+    void SetCountTextL()
+    {
+        leftText.text = leftScoreNum.ToString();
+    }
+    void SetCountTextR()
+    {
+        rightText.text = rightScoreNum.ToString();
     }
 }

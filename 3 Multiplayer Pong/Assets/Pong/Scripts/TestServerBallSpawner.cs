@@ -8,7 +8,7 @@ using UnityEngine;
  */
 
 /*
- * Only taking this script to have the ball spawner tested. it works but no movement from ball yet.
+ * Only taking this script to have the ball spawner tested. it works. Ball movement done was on testserverball.cs
  */
 public class TestServerBallSpawner : MonoBehaviour
 {

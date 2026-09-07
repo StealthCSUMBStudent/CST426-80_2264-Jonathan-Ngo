@@ -25,6 +25,7 @@ public class Paddle : NetworkBehaviour
     [SerializeField] float minTravelZ;
     [SerializeField] float maxTravelZ;
     [SerializeField] float speed;
+    //[SerializeField] float direction = 0f;
     [SerializeField] float collisionBallSpeedUp = 1.5f;
 
     // Local two-player needs separate keys per paddle. InputSystem_Actions
@@ -48,10 +49,20 @@ public class Paddle : NetworkBehaviour
         paddlePos.x = x;
         transform.position = paddlePos;
     }
-
-    void Update()
+    [Rpc(SendTo.Server)]
+    private void UpdatedInputServerRpc(float direction)
     {
+        Vector3 newPosition = transform.position + new Vector3(0f, 0f, direction) * speed * Time.deltaTime;
+        newPosition.z = Mathf.Clamp(newPosition.z, minTravelZ, maxTravelZ);
+
+        transform.position = newPosition;
+    }
+        void Update()
+    {
+        
+       
         //Debug.Log($"Paddle {side}: IsOwner={IsOwner}, IsClient={IsClient}, IsServer={IsServer}");
+        
         if (!IsOwner)
         {
             return;
@@ -60,11 +71,15 @@ public class Paddle : NetworkBehaviour
         float direction = 0f;
         if (Keyboard.current[moveUpKey].isPressed) direction += 1f;
         if (Keyboard.current[moveDownKey].isPressed) direction -= 1f;
-
+        /*
         Vector3 newPosition = transform.position + new Vector3(0f, 0f, direction) * speed * Time.deltaTime;
         newPosition.z = Mathf.Clamp(newPosition.z, minTravelZ, maxTravelZ);
 
         transform.position = newPosition;
+        */
+        UpdatedInputServerRpc(direction);
+
+
         /*
          *         if (Keyboard.current == null) return;
 

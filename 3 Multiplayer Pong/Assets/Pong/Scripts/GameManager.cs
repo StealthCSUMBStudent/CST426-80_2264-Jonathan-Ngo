@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI leftPlayerScoreText;
     [SerializeField] TextMeshProUGUI rightPlayerScoreText;
 
-    int _leftPlayerScore;
-    int _rightPlayerScore;
+    public int _leftPlayerScore;
+    public int _rightPlayerScore;
 
     const int ScoreToWin = 11;
 

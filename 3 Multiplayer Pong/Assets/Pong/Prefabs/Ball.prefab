@@ -248,5 +248,12 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   speed: 3
   direction: {x: 1, y: 0, z: 0}
-  resetDistance: 7
+  resetDistance: 9
   paddler: {fileID: 8936796061542835020, guid: 183b4c8ff3a2c1e489353e2a0b306d5b, type: 3}
+  randomNum: 0
+  zNum: 0
+  leftScoreNum: 0
+  rightScoreNum: 0
+  leftText: {fileID: 7815837000156384917, guid: 606050671baf82d4287cccf63fc7d003, type: 3}
+  rightText: {fileID: 3378875505794548777, guid: e9f6c1dd2ca04e345899a624bef27ead, type: 3}
+  scoreChecker: {fileID: 1320114026934479209, guid: b5f5a5d2b3017254a9d0e85cb161e2d8, type: 3}
