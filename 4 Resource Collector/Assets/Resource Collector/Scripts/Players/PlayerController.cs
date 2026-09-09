@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.InputSystem;
 
 /*
@@ -45,11 +46,14 @@ public class PlayerController : NetworkBehaviour
         _characterController.Move(direction * _smoothedInput.y * _movementSpeed * Time.deltaTime);
 
         // TODO Slice 2.4: set the "Speed" animator float so walk speed matches input.
-        //_animator.SetFloat("Speed", _characterController.velocity.magnitude);
+        _animator.SetFloat("Speed", _characterController.velocity.magnitude);
+
+        UpdateInteractionTarget();
 
 
         // TODO Slice 6.2: detect a target and request interaction on E or left-click.
     }
+
 
     public override void OnNetworkSpawn()
     {
@@ -92,6 +96,7 @@ public class PlayerController : NetworkBehaviour
         //return new Vector2();
     }
 
+    
     void UpdateInteractionTarget()
     {
         // TODO Slice 5.1: find the closest valid Interactable in front of the player.
@@ -105,8 +110,58 @@ public class PlayerController : NetworkBehaviour
         // 3. If the closest candidate is still _closestTarget, nothing changed; return.
         // 4. Otherwise, remove the old highlight, store the new candidate, and
         //    highlight it (if there is one).
+
+        Interactable interactable = FindClosestValidInteractable();
+        if (interactable == _closestTarget) return;
+
+        ClearSelection();
+
+        if (interactable != null)
+        {
+            _closestTarget = interactable;
+            _closestTarget.GetComponent<Highlightable>().SetHighlighted(true);
+        }
     }
 
+
+    Interactable FindClosestValidInteractable()
+    {
+        Collider[] candidates = Physics.OverlapSphere(transform.position, _detectionRadius, _pickupLayer);
+        Interactable closestInteractable = null;
+        float closestDistanceSqr = float.MaxValue;
+
+        foreach (Collider c in candidates) {
+            //Has Interactable
+            if(!c.TryGetComponent(out Interactable interactable)) continue;
+            
+
+            if (!interactable.CanInteract(_heldItem.ObjectType)) continue;
+
+            Vector3 directionToInteractable = interactable.transform.position - transform.position;
+
+            float angle =  Vector3.Angle(transform.forward, directionToInteractable.normalized);
+            if (angle > _detectionAngle) continue;
+
+            float distanceSqr = directionToInteractable.sqrMagnitude;
+            if (distanceSqr < closestDistanceSqr)
+            {
+                closestInteractable = interactable;
+                closestDistanceSqr = distanceSqr;
+            }
+        }
+
+        return closestInteractable;
+    }
+    
+    void ClearSelection()
+    {
+        if (_closestTarget != null)
+        {
+            _closestTarget.GetComponent<Highlightable>().enabled = false;
+        }
+        _closestTarget = null;
+    }
+    
     [Rpc(SendTo.Server)]
     void RequestInteractRpc(ulong networkObjectId)
     {

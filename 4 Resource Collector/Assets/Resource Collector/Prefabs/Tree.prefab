@@ -133,8 +133,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3627247551
+  GlobalObjectIdHash: 2665021956
   InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
@@ -160,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
   ShowTopMostFoldoutHeaderGroup: 1
-  _toolTypeRequired: 01000000
+  _toolTypeRequired: 01000000i
   _producedPrefab: {fileID: 2689028713210712424, guid: e936df660d5d23043941bdbc706607c9, type: 3}
   _amountToSpawn: 3
   _startingHealth: 2
