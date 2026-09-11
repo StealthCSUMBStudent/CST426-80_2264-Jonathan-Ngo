@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -50,6 +51,9 @@ public class PlayerController : NetworkBehaviour
 
         UpdateInteractionTarget();
 
+        if (Keyboard.current.eKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame) 
+            HandleInteractionPressed();
+        
 
         // TODO Slice 6.2: detect a target and request interaction on E or left-click.
     }
@@ -79,10 +83,19 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        // TODO Slice 6.1: if there is no target, return. Otherwise fire the
-        // Animator's "Interact" trigger and send the target's NetworkObjectId
-        // to the server.
+        // TODO Slice 6.2:
+
+        // 1. If there is no target, return.
+
+        // 2. Fire the Animator's "Interact" trigger.
+
+        // 3. Send the target's NetworkObjectId to the server.
+        if (_closestTarget == null) return;
+        _animator.SetTrigger("Interact");
+        RequestInteractRpc(_closestTarget.NetworkObjectId);
+
     }
+
 
     static Vector2 ReadMovementInput()
     {
@@ -96,31 +109,18 @@ public class PlayerController : NetworkBehaviour
         //return new Vector2();
     }
 
-    
+
     void UpdateInteractionTarget()
     {
-        // TODO Slice 5.1: find the closest valid Interactable in front of the player.
-        // When the target changes, clear the old highlight and select the new one.
-
-        // 1. Detect nearby objects with Physics.OverlapSphere, using
-        //    _detectionRadius and _pickupLayer.
-        // 2. Check each hit and keep the closest Interactable within _detectionAngle.
-        //    Ignore hits without an Interactable or whose
-        //    CanInteract(_heldItem.ObjectType) returns false.
-        // 3. If the closest candidate is still _closestTarget, nothing changed; return.
-        // 4. Otherwise, remove the old highlight, store the new candidate, and
-        //    highlight it (if there is one).
-
-        Interactable interactable = FindClosestValidInteractable();
+        Interactable interactable = null;
+        interactable = FindClosestValidInteractable();
         if (interactable == _closestTarget) return;
-
         ClearSelection();
+        if (interactable == null) return;
 
-        if (interactable != null)
-        {
-            _closestTarget = interactable;
-            _closestTarget.GetComponent<Highlightable>().SetHighlighted(true);
-        }
+        _closestTarget = interactable;
+        _closestTarget.GetComponent<Highlightable>().SetHighlighted(true);
+
     }
 
 
@@ -165,8 +165,38 @@ public class PlayerController : NetworkBehaviour
     [Rpc(SendTo.Server)]
     void RequestInteractRpc(ulong networkObjectId)
     {
-        // TODO Slice 6.3: resolve the NetworkObject id and invoke its server gateway.
-        // The target may have despawned after the owner selected it.
-        // Next: Slice 6.4 in Interactable.ServerInteract.
+        //Debug.Log($"Requesting Interact on server for {networkObjectId}");
+        // TODO Slice 6.3:
+
+        // 1. Look up networkObjectId in SpawnedObjects.
+
+        // 2. If that object is gone, return. It may have despawned after you selected it.
+
+        // 3. If it has an Interactable, call ServerInteract(_heldItem).
+
+
+        // Check: E still only plays Interact. Console stays clean. The pickup
+
+        // (e.g. axe) does not move yet.
+
+
+        // Next: Slice 6.4 in World/Interactable.cs — ServerInteract.
+        Dictionary<ulong, NetworkObject> spawnedObjectMap = NetworkManager.SpawnManager.SpawnedObjects;
+        if (!spawnedObjectMap.TryGetValue(networkObjectId, out NetworkObject spawnedObject))
+        {
+            Debug.LogError($"Couldn't Find id {networkObjectId}");
+            return;
+        }
+        
+        if (!spawnedObject.TryGetComponent(out Interactable interactable))
+        {
+            Debug.LogError($"Object doesn't have interactable");
+            return;
+        }
+
+        if (interactable.CanInteract(_heldItem.ObjectType)) 
+            interactable.ServerInteract(_heldItem);
+
+
     }
 }

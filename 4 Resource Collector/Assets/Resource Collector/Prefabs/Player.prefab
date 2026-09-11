@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4229884011
+  GlobalObjectIdHash: 2402111284
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -1876,19 +1876,12 @@ MonoBehaviour:
   m_Animator: {fileID: 637217615066948756}
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -453240694
+    Layer: 1
+    OriginatingState: 753088835
     DestinationState: -662453572
     TransitionDuration: 0.25
     TriggerNameHash: -662453572
     TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -453240694
-    DestinationState: 2122884932
-    TransitionDuration: 0.25
-    TriggerNameHash: 1547809795
-    TransitionIndex: 1
   AnimatorParameterEntries:
     ParameterEntries:
     - name: Speed

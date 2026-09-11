@@ -18,7 +18,7 @@ public class ItemPickup : Interactable
 
         // Despawn(false) leaves the GameObject active and visible. Netcode also
         // runs this callback on a late joiner's copy of a taken scene pickup.
-        if (NetworkObject.InScenePlaced == true)
+        if (NetworkObject.InScenePlaced && !NetworkManager.ShutdownInProgress)
             gameObject.SetActive(false);
     }
 
@@ -30,10 +30,26 @@ public class ItemPickup : Interactable
 
     protected override void Interact(PlayerHeldItem heldItem)
     {
-        // TODO Slice 6.5: put this item's type in the player's hand, then Despawn.
-        //   Destroy catalog drops; keep scene pickups: Despawn(destroy: NetworkObject.InScenePlaced != true).
-        // Next: Slice 6.6 in PlayerHeldItem.SetHeldItem.
+
         // TODO Slice 7.2: SpawnHeldItemAsNewPickup first so a swap returns the old type.
+        heldItem.DropHeldItem(transform.position);
+
         // Next: Slice 7.3 in PlayerHeldItem.OnNetworkPreDespawn.
+
+        // TODO Slice 6.5: Set the held item to be this item pickup
+        heldItem.SetHeldItem(_objectType);
+
+        // Next: Slice 6.6 in Players/PlayerHeldItem.cs — SetHeldItem.
+
+
+        // TODO Slice 6.10:
+        // 1. Despawn this pickup.
+        // 2. Destroy catalog drops; keep scene pickups.
+        // Check: Host + Client. The ground axe disappears in both Game views.
+        // A late joiner sees the held axe and no ground axe. </> end of Slice 6
+        // Next: Slice 7.1 in Players/PlayerHeldItem.cs — DropHeldItem and Clear.
+
+        NetworkObject.Despawn(false);
+
     }
 }
