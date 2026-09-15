@@ -51,11 +51,16 @@ public class PlayerController : NetworkBehaviour
 
         UpdateInteractionTarget();
 
+        // TODO Slice 6.1:
+        // 1. Detect E or left-click this frame.
+        // 2. Call HandleInteractionPressed.
+        // Check: Play Mode, Host, highlight the axe, press E.
+        // The Interact clip plays. The axe still stays on the ground.
         if (Keyboard.current.eKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame) 
             HandleInteractionPressed();
         
 
-        // TODO Slice 6.2: detect a target and request interaction on E or left-click.
+        
     }
 
 
@@ -76,6 +81,7 @@ public class PlayerController : NetworkBehaviour
         {
             // TODO Slice 5.2: turn off the current target's Highlightable,
             // then clear _closestTarget.
+            ClearSelection();
         }
 
         base.OnNetworkDespawn();
@@ -114,6 +120,8 @@ public class PlayerController : NetworkBehaviour
 
     void UpdateInteractionTarget()
     {
+        // PROVIDED Slice 5.1: find the closest valid Interactable in front of the player.
+        // When the target changes, clear the old highlight and select the new one.
         Interactable interactable = null;
         interactable = FindClosestValidInteractable();
         if (interactable == _closestTarget) return;
