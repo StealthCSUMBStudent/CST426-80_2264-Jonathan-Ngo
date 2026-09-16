@@ -18,6 +18,8 @@ public class ItemPickup : Interactable
 
         // Despawn(false) leaves the GameObject active and visible. Netcode also
         // runs this callback on a late joiner's copy of a taken scene pickup.
+        // A session ending despawns everything too; hiding then would leave
+        // uncollected pickups inactive for the next join.
         if (NetworkObject.InScenePlaced && !NetworkManager.ShutdownInProgress)
             gameObject.SetActive(false);
     }
@@ -49,7 +51,8 @@ public class ItemPickup : Interactable
         // A late joiner sees the held axe and no ground axe. </> end of Slice 6
         // Next: Slice 7.1 in Players/PlayerHeldItem.cs — DropHeldItem and Clear.
 
-        NetworkObject.Despawn(false);
+        //NetworkObject.Despawn(false);
+        NetworkObject.Despawn(!NetworkObject.InScenePlaced);
 
     }
 }
