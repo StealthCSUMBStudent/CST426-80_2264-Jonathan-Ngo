@@ -35,6 +35,8 @@ public class ResourceNode : Interactable
         // TODO Slice 8.5: subscribe to health changes and apply the current health.
 
         // Check: both windows hide a depleted tree. A late joiner sees it hidden.
+        _health.OnValueChanged += HandleHealthChanged;
+        HandleHealthChanged(_health.Value, _health.Value);
 
         // Next: Slice 8.6 OnNetworkDespawn.
     }
@@ -42,7 +44,7 @@ public class ResourceNode : Interactable
     public override void OnNetworkDespawn()
     {
         // TODO Slice 8.6: unsubscribe from replicated health changes.
-
+        _health.OnValueChanged -= HandleHealthChanged;
         // </> end of Slice 8
 
         // Next: Slice 9.1 in World/Receptacle.cs.
@@ -82,8 +84,7 @@ public class ResourceNode : Interactable
         {
             Vector3 spawnPosition = transform.position + new Vector3(Random.Range(-2f, 2f), 0f, Random.Range(-2f, 2f));
             Quaternion spawnRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-            NetworkObject.InstantiateAndSpawn(_producedPrefab.gameObject,
-            NetworkManager, position: spawnPosition, rotation: spawnRotation);
+            NetworkObject.InstantiateAndSpawn(_producedPrefab.gameObject, NetworkManager, position: spawnPosition, rotation: spawnRotation);
         }
         // 4. Place each with a small random XZ offset and random yaw.
 
@@ -103,12 +104,18 @@ public class ResourceNode : Interactable
     void HandleHealthChanged(int previousValue, int newValue)
     {
         // TODO Slice 8.4: make the visuals and physics match the health.
+        bool isAlive = newValue > 0;
 
+        foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
+        {
+            renderer.enabled = isAlive;
+        }
+
+        foreach (Collider collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = isAlive;
+        }
         // Next: Slice 8.5 in OnNetworkSpawn — subscribe and apply.
     }
 
-    void ApplyHealth()
-    {
-        // TODO Slice 8.2: hide depleted nodes and disable their collider.
-    }
 }
