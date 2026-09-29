@@ -28,7 +28,10 @@ public static class QuadraticBezierMath
         // to t using the product rule. Explain each step." Then derive it yourself.
         // Check: DeCasteljauQuadratic_SamplesTangentFromFinalInterpolationSegment passes.
         // Next: Slice 2.3 in Demo/QuadraticBezierCurve.cs.
-        return Vector3.zero;
+        Vector3 A = Vector3.Lerp(p0, p1, t);
+        Vector3 B = Vector3.Lerp(p1, p2, t);
+        return 2f * (B - A);
+        //return Vector3.zero;
     }
 
     // B(t) = (1-t)^2 P0 + 2(1-t)t P1 + t^2 P2
@@ -37,7 +40,12 @@ public static class QuadraticBezierMath
         // TODO Slice 6.1: evaluate the Bernstein equation above.
         // Check: BernsteinQuadratic_SamplesPointFromEquivalentQuadraticFormula passes.
         // Next: Slice 6.2 in Demo/QuadraticBezierCurve.cs.
-        return Vector3.zero;
+        float tComplement = 1 - t;
+        float w0 = (tComplement * tComplement);
+        float w1 = 2f * tComplement * t;
+        float w2 = t * t;
+        return w0 * p0 + w1 * p1 + w2 * p2;
+        //return Vector3.zero;
     }
 
     public static Vector3 SampleTangentBernstein(Vector3 p0, Vector3 p1, Vector3 p2, float t)
@@ -48,7 +56,12 @@ public static class QuadraticBezierMath
         // to t using the product rule. Explain each step." Then derive it yourself.
         // Check: BernsteinQuadratic_SamplesTangentFromDerivativeFormula passes.
         // Next: Slice 6.4 in Demo/QuadraticBezierCurve.cs.
-        return Vector3.zero;
+        float tComplement = 1 - t;
+        float w0 = -2f * tComplement;
+        float w1 = 2f * (1f - 2f * t);
+        float w2 = 2f * t;
+        return w0 * p0 + w1 * p1 + w2 * p2;
+        //return Vector3.zero;
     }
 
     // C0 = P0
@@ -64,9 +77,9 @@ public static class QuadraticBezierMath
         // TODO Slice 7.1: compute C0, C1, C2 from the equations above.
         // Check: points (0,0,0), (2,3,0), (4,0,0) give (0,0,0), (4,6,0), (0,-6,0).
         // Next: Slice 7.2 below. No test turns green from 7.1 alone.
-        c0 = Vector3.zero;
-        c1 = Vector3.zero;
-        c2 = Vector3.zero;
+        c0 = p0;
+        c1 = 2f * (p1- p0);
+        c2 = p0 - 2f * p1 + p2;
     }
 
     // P(t) = C0 + C1 t + C2 t^2
@@ -75,7 +88,8 @@ public static class QuadraticBezierMath
         // TODO Slice 7.2: evaluate P(t) from the coefficients.
         // Check: PowerBasisQuadratic_SamplesPointFromEquivalentQuadraticFormula passes.
         // Next: Slice 7.3 in Demo/QuadraticBezierCurve.cs, Start.
-        return Vector3.zero;
+        return c0 + c1 * t + c2 * t * t;
+        //return Vector3.zero;
     }
 
     // P'(t) = C1 + 2 C2 t
@@ -85,6 +99,7 @@ public static class QuadraticBezierMath
         // Check: PowerBasisQuadratic_SamplesTangentFromDerivativeFormula passes.
         // All 17 tests now pass. No scene hookup: the adapters keep Bernstein.
         // Next: open Main Game, Slice 8.1 in Game/ThrownAxe.cs. </> end of Slice 7
-        return Vector3.zero;
+        return c1 + 2f * c2 * t;
+        //return Vector3.zero;
     }
 }
