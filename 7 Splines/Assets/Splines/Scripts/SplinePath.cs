@@ -16,7 +16,7 @@ using UnityEngine;
 public class SplinePath : MonoBehaviour
 {
     public Transform[] points;
-    
+    public bool rockChecker = false;
     [Min(1)]
     public int samplesPerSegment = 64;
     
@@ -111,6 +111,7 @@ public class SplinePath : MonoBehaviour
         if (distance >= TotalLength) // make sure not to go past the last row
         {
             return _distanceTable.Last().u;
+
         }
 
 
@@ -127,6 +128,7 @@ public class SplinePath : MonoBehaviour
                 return u;
             }
         }
+        
 
         return 0f; //to prevent errors
     }

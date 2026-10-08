@@ -13,6 +13,7 @@ public class SplineFollow : MonoBehaviour
     public float speed = 2.5f; // Positive world units per second in the completed exercise.
     public bool travelByDistance = true;
     public bool faceTarget = true;
+    public bool rockChecker = false;
 
     float _distance;
     float _u;
@@ -25,7 +26,17 @@ public class SplineFollow : MonoBehaviour
             // Stop at TotalLength.
             _distance += speed * Time.deltaTime;
             _distance = Mathf.Clamp(_distance, 0f, path.TotalLength);
+
+            if (_distance >= path.TotalLength && rockChecker == false)
+            {
+                rockChecker = true;
+                Debug.Log("Liftoff! => " + rockChecker);
+            }
+
+
             _u = path.ParameterAtDistance(_distance);
+            //rockChecker = true;
+            //Debug.Log("We are Ready! Liftoff! => " + rockChecker);
         }
         else
         {
@@ -62,5 +73,6 @@ public class SplineFollow : MonoBehaviour
     {
         _distance = 0f;
         _u = 0f;
+        rockChecker = false;
     }
 }
