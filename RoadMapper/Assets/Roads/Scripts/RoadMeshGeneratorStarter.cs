@@ -75,9 +75,9 @@ public class RoadMeshGeneratorStarter : MonoBehaviour
         }
 
         List<int> triangles = new();
-        for (int i = 0; i < rungs-1; i++)
+        for (int i = 0; i < rungs - 1; i++)
         {
-            int bottomLeft = i + 2;
+            int bottomLeft = i * 2;
             int bottomRight = bottomLeft + 1;
             int topLeft = (i + 1) * 2;
             int topRight = topLeft + 1;
