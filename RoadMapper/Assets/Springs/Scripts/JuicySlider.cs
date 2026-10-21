@@ -44,6 +44,8 @@ public class JuicySlider : Slider
         // TODO: Step the spring with spring.Advance(Time.deltaTime) and show its value on the slider.
         // base.Set changes the visual location of the slider handle. Make sure sendCallback is off,
         // so listeners only respond to the target value and not the in progress interpolated spring value
+        spring.Advance(Time.deltaTime);
+        base.Set(spring.Value);
     }
 
     // Every input comes through here: drag, click, keys, or code assigning slider.value.
@@ -63,6 +65,13 @@ public class JuicySlider : Slider
         // TODO: Set the spring's new equilibrium. Don't call base.Set here (that moves the handle and
         // should happen in Update). If sendCallback is on and the target changed, invoke onValueChanged
         // with the new target so listeners (e.g. a volume control) know what the value will change to.
-        base.Set(target, sendCallback);
+        // The base.Set velow is only there so the slider works like a plain Slider before you start.
+        // Take it out when you write this. -> base.Set(target, sendCallback);
+        spring.equilibrium = target;
+        if (sendCallback)
+        {
+            onValueChanged.Invoke(spring.equilibrium);
+        }
+        //Debug.Log("Slider called: " + target);
     }
 }
