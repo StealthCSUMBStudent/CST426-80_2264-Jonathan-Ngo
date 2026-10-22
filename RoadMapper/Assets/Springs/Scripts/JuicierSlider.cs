@@ -61,14 +61,19 @@ public class JuicierSlider : MonoBehaviour
         {
             handleSpring.equilibrium = PointerXOnTrack();
             handleSpring.equilibrium = Mathf.Clamp(handleSpring.equilibrium, -travelHalfWidth, travelHalfWidth);
+        // TODO: Set pressSpring.equilibrium to 1 while pressed and 0 otherwise.
+            pressSpring.equilibrium = 1;
+        } else
+        {
+            pressSpring.equilibrium = 0;
         }
 
-        // TODO: Set pressSpring.equilibrium to 1 while pressed and 0 otherwise.
         
         // TODO: Step both springs with handleSpring.Advance(Time.deltaTime) and
         // pressSpring.Advance(Time.deltaTime). Don't move anything here (that happens in
         // UpdateHandleVisuals).
-
+        handleSpring.Advance(Time.deltaTime);
+        pressSpring.Advance(Time.deltaTime);
         UpdateHandleVisuals();
     }
 
@@ -80,6 +85,7 @@ public class JuicierSlider : MonoBehaviour
             // TODO: On release, set handleSpring.equilibrium to the nearest slot,
             // NearestSlot(handleSpring.equilibrium). The spring carries the handle there.
             // Watch out: change the target, not the spring's value. SetValue would teleport the handle.
+            handleSpring.equilibrium = NearestSlot(handleSpring.equilibrium);
             _isPressed = false;
         }
 
@@ -96,10 +102,14 @@ public class JuicierSlider : MonoBehaviour
     {
         // TODO: Slide the handle: start from _restSliderPosition, add handleSpring.Value to its x,
         // and assign the result to transform.localPosition.
-
+        Vector3 tempPosition = _restSliderPosition; 
+        tempPosition.x += handleSpring.Value;
+        transform.localPosition = tempPosition;
         // TODO: Dip the top: start from _restHandlePosition, add pressDepth * pressSpring.Value to
         // its y, and assign the result to handleTransform.localPosition.
-
+        Vector3 tempHandle = _restHandlePosition;
+        tempHandle.y += (pressDepth * pressSpring.Value);
+        handleTransform.localPosition = tempHandle;
         // Watch out: start from the rest positions every frame. Adding to the current position
         // would add the offset again each frame, and the handle would drift away.
     }
