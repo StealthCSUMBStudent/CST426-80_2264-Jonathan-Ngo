@@ -12,6 +12,7 @@ public class RoadMeshGeneratorStarter : MonoBehaviour
     public float width = 3f;
     public Material material;
     public float textureRepeatLength = 2f;
+    public float thickness = 0.3f; //for thickslab 
     public bool rebuildEveryFrame;
     MeshFilter _meshFilter;
     MeshRenderer _meshRenderer;
@@ -66,10 +67,16 @@ public class RoadMeshGeneratorStarter : MonoBehaviour
             //create the left and right verts
             Vector3 leftVert = centerPoint - right * halfWidth;
             Vector3 rightVert = centerPoint + right * halfWidth;
+            Vector3 bottomLVert = leftVert - (Vector3.down * thickness);
+            Vector3 bottomRVert = rightVert - (Vector3.down * thickness);
 
             verts.Add(leftVert);
             verts.Add(rightVert);
+            verts.Add(bottomLVert);
+            verts.Add(bottomRVert);
 
+            uvs.Add(new Vector2(0f, distance / textureRepeatLength));
+            uvs.Add(new Vector2(1f, distance / textureRepeatLength));
             uvs.Add(new Vector2(0f, distance / textureRepeatLength));
             uvs.Add(new Vector2(1f, distance / textureRepeatLength));
         }
@@ -77,19 +84,53 @@ public class RoadMeshGeneratorStarter : MonoBehaviour
         List<int> triangles = new();
         for (int i = 0; i < rungs - 1; i++)
         {
-            int bottomLeft = i * 2;
-            int bottomRight = bottomLeft + 1;
-            int topLeft = (i + 1) * 2;
-            int topRight = topLeft + 1;
+            int curTopLeft = i * 4; //change to 4 to get the vertices matched
+            int curTopRight = curTopLeft + 1; // (i * 4)
+            int curBottomLeft = curTopLeft + 2;
+            int curBottomRight = curTopLeft + 3;
 
-            triangles.Add(bottomLeft);
+            int topLeft = (i + 1) * 4;
+            int topRight = topLeft + 1;
+            int bottomLeft = topLeft + 2;
+            int bottomRight = topLeft + 3;
+
+            // top surface ((mostly same code))
+            triangles.Add(curTopLeft);
             triangles.Add(topLeft);
-            triangles.Add(bottomRight);
+            triangles.Add(curTopRight);
 
             triangles.Add(topLeft);
             triangles.Add(topRight);
+            triangles.Add(curTopRight);
+
+            // bottom surface ((mostly same code))
+            triangles.Add(curBottomLeft);
+            triangles.Add(bottomLeft);
+            triangles.Add(curBottomRight);
+
+            triangles.Add(bottomLeft);
             triangles.Add(bottomRight);
+            triangles.Add(curBottomRight);
+
+            // left side
+            triangles.Add(curTopLeft);
+            triangles.Add(curBottomLeft);
+            triangles.Add(topLeft);
+
+            triangles.Add(topLeft);
+            triangles.Add(curBottomLeft);
+            triangles.Add(bottomLeft);
+
+            // right side
+            triangles.Add(curTopRight);
+            triangles.Add(topRight);
+            triangles.Add(curBottomRight);
+
+            triangles.Add(topRight);
+            triangles.Add(bottomRight);
+            triangles.Add(curBottomRight);
         }
+
 
         Mesh mesh = new();
         mesh.vertices = verts.ToArray();
