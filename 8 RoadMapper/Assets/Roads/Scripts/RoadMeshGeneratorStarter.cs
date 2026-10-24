@@ -130,7 +130,37 @@ public class RoadMeshGeneratorStarter : MonoBehaviour
             triangles.Add(bottomRight);
             triangles.Add(curBottomRight);
         }
+        //int[] triangles = { 0, 2, 1, 1, 2, 3 }; snippet from proceduralquadstarter.cs
 
+        // 2        3
+        /*   |----|
+         *   | || |
+         *   | || |
+         *   ||  ||
+         * 0 |____| 1
+         */
+
+
+        //front wall end needed
+        triangles.Add(0);
+        triangles.Add(2);
+        triangles.Add(1);
+
+        triangles.Add(1);
+        triangles.Add(2);
+        triangles.Add(3);
+
+
+        //last bit of wall
+        int lastEnd = (rungs - 1) * 4; // i < rungs - 1
+
+        triangles.Add(lastEnd);
+        triangles.Add(lastEnd + 2);
+        triangles.Add(lastEnd + 1);
+
+        triangles.Add(lastEnd + 1);
+        triangles.Add(lastEnd + 2);
+        triangles.Add(lastEnd + 3);
 
         Mesh mesh = new();
         mesh.vertices = verts.ToArray();
