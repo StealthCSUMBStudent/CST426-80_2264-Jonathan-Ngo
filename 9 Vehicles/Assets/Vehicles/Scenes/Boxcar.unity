@@ -1066,7 +1066,7 @@ MonoBehaviour:
   showSuspensionForces: 1
   showGripForces: 1
   showDriveForces: 1
-  showHubBasis: 0
+  showHubBasis: 1
   forceVisualizationScale: 0.001
   basisVisualizationScale: 0.5
   suspensionForceColor: {r: 0, g: 1, b: 0, a: 1}

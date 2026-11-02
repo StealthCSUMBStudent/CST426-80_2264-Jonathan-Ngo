@@ -83,7 +83,6 @@ public class Vehicle : MonoBehaviour
             float restoringForce = -stiffness * displacement;
             float suspensionSpeed = Vector3.Dot(hub.transform.up, hubVelocity);
             float dampingForce = -damping * suspensionSpeed;
-
             hub.SuspensionForce = (restoringForce + dampingForce) * hub.transform.up;
 
             hub.wheelVisual.transform.position = groundHit.point + hub.WheelRadius * hub.transform.up;
@@ -98,7 +97,7 @@ public class Vehicle : MonoBehaviour
             float wheelCircumference = 2f * Mathf.PI * hub.WheelRadius;
             float wheelRevolutions = rollingDistance / wheelCircumference;
             float spinDegrees = wheelRevolutions * 360f;
-            hub.wheelVisual.Rotate(spinDegrees,0f, 0f);
+            hub.wheelVisual.Rotate(spinDegrees,0f, 0f, Space.Self);
 
             // TODO Part 6, grip and steering: push against how fast this hub slides along its right.
             // gripStrength affects how strong the anti-slide force is (a damper turned sideways).
@@ -106,7 +105,7 @@ public class Vehicle : MonoBehaviour
             float gripForce = -gripStrength * slippingSpeed;
             hub.GripForce = gripForce * hub.transform.right;
 
-            Vector3 totalForce = hub.SuspensionForce + hub.DriveForce;
+            Vector3 totalForce = hub.SuspensionForce + hub.DriveForce + hub.GripForce;
             carRigidBody.AddForceAtPosition(totalForce, hub.transform.position);
         }
     }
