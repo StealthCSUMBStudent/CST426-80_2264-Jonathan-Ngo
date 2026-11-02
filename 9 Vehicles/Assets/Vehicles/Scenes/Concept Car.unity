@@ -960,6 +960,8 @@ GameObject:
   - component: {fileID: 641930370}
   - component: {fileID: 641930376}
   - component: {fileID: 641930369}
+  - component: {fileID: 641930378}
+  - component: {fileID: 641930377}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -1028,6 +1030,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1162139241}
   - {fileID: 1227315589}
   - {fileID: 859565992}
   - {fileID: 1063560078}
@@ -1059,6 +1062,60 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7, y: 0.3, z: 2.4}
   m_Center: {x: 0, y: 1, z: -0.4}
+--- !u!114 &641930377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641930366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a54386a7319450082795c6cd5e90285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleVisualizations
+  vehicle: {fileID: 641930378}
+  showVisualizations: 1
+  showSuspensionForces: 1
+  showGripForces: 1
+  showDriveForces: 1
+  showHubBasis: 0
+  forceVisualizationScale: 0.001
+  basisVisualizationScale: 0.5
+  suspensionForceColor: {r: 0, g: 1, b: 0, a: 1}
+  gripForceColor: {r: 1, g: 0, b: 0, a: 1}
+  driveForceColor: {r: 0, g: 0, b: 1, a: 1}
+  hubUpColor: {r: 0, g: 1, b: 0, a: 1}
+  hubForwardColor: {r: 0, g: 0, b: 1, a: 1}
+  hubRightColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &641930378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641930366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5830da4751c8d944ebe2f2e6c15e9c66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Vehicle
+  carRigidBody: {fileID: 641930369}
+  hubDataList:
+  - {fileID: 859565993}
+  - {fileID: 1063560079}
+  - {fileID: 1494680412}
+  - {fileID: 2047819077}
+  suspensionRestDist: 0.5
+  raycastLength: 1.5
+  stiffness: 30000
+  damping: 1000
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  maxSteerAngle: 30
+  gripStrength: 750
+  driveForce: 2000
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1739,12 +1796,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162139238}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09042264, y: 0, z: 0, w: 0.9959035}
-  m_LocalPosition: {x: 0, y: 2.4099998, z: -6.5}
+  m_LocalRotation: {x: 0.09042264, y: -0, z: -0, w: 0.9959035}
+  m_LocalPosition: {x: 0, y: 2.3, z: -6.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 641930375}
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &1162139242
 MonoBehaviour:
@@ -2509,5 +2566,4 @@ SceneRoots:
   - {fileID: 538283565}
   - {fileID: 2104409422}
   - {fileID: 832575519}
-  - {fileID: 1162139241}
   - {fileID: 641930375}
